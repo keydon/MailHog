@@ -29,12 +29,14 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
+      - name: Get Tag
+        id: vars
+        run: echo "::set-output name=tag::${git rev-parse --short HEAD}"
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
           context: .
           file: Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.vars.outputs.tag }}
+          labels: ${{ steps.vars.outputs.tag }}
